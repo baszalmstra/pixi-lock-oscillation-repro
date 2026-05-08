@@ -57,3 +57,28 @@ repo root, where `../b` points outside the repo.
 On the next `pixi lock`, comparing freshly-resolved metadata for `c` against
 the lockfile-recorded metadata flags `b` as both added and removed, so the
 environment is treated as out-of-date forever.
+
+## Control: pixi-build conda source dependencies do *not* exhibit this
+
+`pixi-build-control/` mirrors the same `repro -> c -> b` chain, but uses
+pixi-build conda source dependencies (`[tool.pixi.dependencies]` for `c`
+and `[tool.pixi.package.run-dependencies]` for `b`) instead of pypi path
+deps via `[tool.uv.sources]`.
+
+```sh
+cd pixi-build-control
+pixi lock   # first run resolves
+pixi lock   # ✔ Lock-file was already up-to-date
+pixi lock   # ✔ Lock-file was already up-to-date
+```
+
+`pixi-build-control/pixi.lock` records both packages with paths recomputed
+relative to the lockfile:
+
+```yaml
+- conda_source: b[...] @ sub/b   # correct from repo root
+- conda_source: c[...] @ sub/c   # correct from repo root
+```
+
+So the path-rewrite bug appears to be specific to the pypi/uv source path
+handling, not pixi-build conda source paths.
