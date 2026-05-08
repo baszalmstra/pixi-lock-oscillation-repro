@@ -32,7 +32,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tzdata-2025c-hc9c84f9_1.conda
       - pypi: .
       - pypi: ../b
-      - pypi: ../sub/c
+      - pypi: sub/c
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_openmp_mutex-4.5-20_gnu.conda
   build_number: 20
@@ -292,14 +292,14 @@ packages:
   size: 119135
   timestamp: 1767016325805
 - pypi: .
-  name: root
+  name: repro
   requires_dist:
-  - c @ ../sub/c
+  - c @ sub/c
   requires_python: '>=3.11'
 - pypi: ../b
   name: b
   requires_python: '>=3.11'
-- pypi: ../sub/c
+- pypi: sub/c
   name: c
   requires_dist:
   - b @ ../b
